@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github/com/cilium/link"
+	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/rlimit"
 )
 
@@ -22,7 +22,7 @@ func main() {
 	}
 	defer objs.Close()
 
-	ifname := "eth0"
+	ifname := "ens18"
 	iface, err := net.InterfaceByName(ifname)
 	if err != nil {
 		log.Fatalf("Getting interface %s: %s", ifname, err)
