@@ -1,4 +1,3 @@
 package main
 
-//go:generate go run github.com/cilium/ebpf/cmd/bpf2go tcpdump tcpdump.c
-
+//go:generate go run github.com/cilium/ebpf/cmd/bpf2go bpf xdp.c
