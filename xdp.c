@@ -57,14 +57,13 @@ static __always_inline int parse_packets(struct xdp_md *ctx, struct packet *pkt)
         return 0;
     }
 
-    pkt->src_ip = (__u32)(ip->saddr);
-    pkt->dst_ip = (__u32)(ip->daddr);
+    pkt->src_ip = (__u32)(bpf_ntohl(ip->saddr));
+    pkt->dst_ip = (__u32)(bpf_ntohl(ip->daddr));
     pkt->src_port = (__u16)(bpf_ntohs(tcp->source));
     pkt->dst_port = (__u16)(bpf_ntohs(tcp->dest));
     pkt->seq = (__u32)(bpf_ntohl(tcp->seq));
     pkt->ack = (__u32)(bpf_ntohl(tcp->ack_seq));
     pkt->window = (__u16)(bpf_ntohs(tcp->window));
-    pkt->timestamp = (__u64)(bpf_ktime_get_ns());
 
     return 1;
 }

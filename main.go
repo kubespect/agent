@@ -4,7 +4,6 @@ import (
 	"C"
 	"bytes"
 	"encoding/binary"
-	"encoding/json"
 	"errors"
 	"log"
 	"net"
@@ -26,7 +25,6 @@ type bpfPacket struct {
 	Ack       uint32
 	Flags     uint16
 	Window    uint16
-	Timestamp uint64
 }
 
 func main() {
@@ -103,12 +101,13 @@ func main() {
 			log.Printf("decoding ring buffer record: %s", err)
 			continue
 		}
-		value, err := json.Marshal(packet)
-		if err != nil {
-			log.Printf("json encoding: %s", err)
-			continue
-		}
-		log.Printf("packet: %s", string(value))
+		log.Printf("SrcIP: %s, DstIP: %s, SrcPort: %d, DstPort: %d, Seq: %d, Ack: %d, Flags: %d, Window: %d",intToIP(packet.SrcIP), intToIP(packet.DstIP), packet.SrcPort, packet.DstPort, packet.Seq, packet.Ack, packet.Flags, packet.Window)
 	}
 
+}
+
+func intToIP(ipInt uint32) net.IP {
+	ip := make(net.IP, 4)
+	binary.BigEndian.PutUint32(ip, ipInt)
+	return ip
 }
