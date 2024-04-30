@@ -17,14 +17,14 @@ import (
 )
 
 type bpfPacket struct {
-	SrcIP     uint32
-	DstIP     uint32
-	SrcPort   uint16
-	DstPort   uint16
-	Seq       uint32
-	Ack       uint32
-	Flags     uint16
-	Window    uint16
+	SrcIP   uint32
+	DstIP   uint32
+	SrcPort uint16
+	DstPort uint16
+	Seq     uint32
+	Ack     uint32
+	Flags   uint16
+	Window  uint16
 }
 
 func main() {
@@ -101,13 +101,7 @@ func main() {
 			log.Printf("decoding ring buffer record: %s", err)
 			continue
 		}
-		log.Printf("SrcIP: %s, DstIP: %s, SrcPort: %d, DstPort: %d, Seq: %d, Ack: %d, Flags: %d, Window: %d",intToIP(packet.SrcIP), intToIP(packet.DstIP), packet.SrcPort, packet.DstPort, packet.Seq, packet.Ack, packet.Flags, packet.Window)
+		log.Printf("SrcIP: %s, DstIP: %s, SrcPort: %d, DstPort: %d, Seq: %d, Ack: %d, Flags: %d, Window: %d", intToIP(packet.SrcIP), intToIP(packet.DstIP), packet.SrcPort, packet.DstPort, packet.Seq, packet.Ack, packet.Flags, packet.Window)
 	}
 
-}
-
-func intToIP(ipInt uint32) net.IP {
-	ip := make(net.IP, 4)
-	binary.BigEndian.PutUint32(ip, ipInt)
-	return ip
 }
