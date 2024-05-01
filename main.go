@@ -19,12 +19,12 @@ import (
 type bpfPacket struct {
 	SrcIP   uint32
 	DstIP   uint32
-	SrcPort uint16
-	DstPort uint16
+	SrcPort uint32
+	DstPort uint32
 	Seq     uint32
 	Ack     uint32
-	Flags   uint16
-	Window  uint16
+	Flags   uint32
+	Window  uint32
 }
 
 func main() {

@@ -1,4 +1,4 @@
-//go: build ignore
+// go: build ignore
 
 #include <linux/bpf.h>
 #include <linux/if_ether.h>
@@ -13,12 +13,12 @@ struct packet
 {
     __u32 src_ip;
     __u32 dst_ip;
-    __u16 src_port;
-    __u16 dst_port;
+    __u32 src_port;
+    __u32 dst_port;
     __u32 seq;
     __u32 ack;
-    __u16 flags;
-    __u16 window;
+    __u32 flags;
+    __u32 window;
     __u64 timestamp;
 };
 
@@ -30,7 +30,8 @@ struct
 
 const struct packet *unused __attribute__((unused));
 
-static __always_inline int parse_packets(struct xdp_md *ctx, struct packet *pkt) {
+static __always_inline int parse_packets(struct xdp_md *ctx, struct packet *pkt)
+{
 
     void *data_end = (void *)(long)ctx->data_end;
     void *data = (void *)(long)ctx->data;
@@ -50,7 +51,6 @@ static __always_inline int parse_packets(struct xdp_md *ctx, struct packet *pkt)
         return 0;
     }
 
-
     struct tcphdr *tcp = (void *)ip + ip->ihl * 4;
     if ((void *)(tcp + 1) > data_end)
     {
@@ -59,11 +59,11 @@ static __always_inline int parse_packets(struct xdp_md *ctx, struct packet *pkt)
 
     pkt->src_ip = (__u32)(bpf_ntohl(ip->saddr));
     pkt->dst_ip = (__u32)(bpf_ntohl(ip->daddr));
-    pkt->src_port = (__u16)(bpf_ntohs(tcp->source));
-    pkt->dst_port = (__u16)(bpf_ntohs(tcp->dest));
+    pkt->src_port = (__u32)(bpf_ntohs(tcp->source));
+    pkt->dst_port = (__u32)(bpf_ntohs(tcp->dest));
     pkt->seq = (__u32)(bpf_ntohl(tcp->seq));
     pkt->ack = (__u32)(bpf_ntohl(tcp->ack_seq));
-    pkt->window = (__u16)(bpf_ntohs(tcp->window));
+    pkt->window = (__u32)(bpf_ntohs(tcp->window));
 
     return 1;
 }
