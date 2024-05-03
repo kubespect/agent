@@ -3,7 +3,8 @@ package main
 import (
 	"os"
 	"log"
-	"github.com/kubespect/agent/bpf"
+
+	"github.com/kubespect/agent/cmd"
 )
 
 func main() {
@@ -13,6 +14,7 @@ func main() {
 	// Look up the network interface by name.
 	ifaceName := os.Args[1]
 
-	bpf := bpf.NewBpf(ifaceName)
-	bpf.Run()
+
+	cmd := cmd.NewCmd(ifaceName)
+	cmd.Run()
 }

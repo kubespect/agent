@@ -31,7 +31,7 @@ type XdpPacket struct {
 type Xdp struct {
 	stopper chan os.Signal
 	iface *net.Interface
-	buffer chan XdpPacket
+	Packets chan XdpPacket
 }
 
 func NewXdp(stopper chan os.Signal, iface *net.Interface) *Xdp {
@@ -39,7 +39,7 @@ func NewXdp(stopper chan os.Signal, iface *net.Interface) *Xdp {
 	return &Xdp{
 		stopper: stopper,
 		iface: iface,
-		buffer: make(chan XdpPacket, 1024),
+		Packets: make(chan XdpPacket, 1024),
 	}
 }
 
@@ -93,7 +93,7 @@ func (x *Xdp) Run() {
 		if err != nil {
 			if errors.Is(err, ringbuf.ErrClosed) {
 				log.Println("Received signal, exiting...")
-				close(x.buffer)
+				close(x.Packets)
 				return
 			}
 			log.Printf("reading from ring buffer: %s", err)
@@ -105,7 +105,7 @@ func (x *Xdp) Run() {
 			continue
 		}
 
-		x.buffer <- packet
+		x.Packets <- packet
 	}
 }
 
@@ -113,10 +113,10 @@ func (x *Xdp) GetPacket() (XdpPacket, error) {
 	if x.isBufferClosed() {
 		return XdpPacket{}, errors.New("buffer is closed")
 	}
-	return <-x.buffer, nil
+	return <-x.Packets, nil
 }
 
 func (x *Xdp) isBufferClosed() bool {
-	_, ok := <-x.buffer
+	_, ok := <-x.Packets
 	return !ok
 }

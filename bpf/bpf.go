@@ -11,7 +11,7 @@ import (
 )
 
 type Bpf struct {
-	xdp *xdp.Xdp
+	Xdp *xdp.Xdp
 
 	stopper chan os.Signal
 }
@@ -28,15 +28,15 @@ func NewBpf(ifaceName string) *Bpf {
 
 	return &Bpf{
 		stopper: stopper,
-		xdp:     xdp.NewXdp(stopper, iface),
+		Xdp:     xdp.NewXdp(stopper, iface),
 	}
 }
 
 func (b *Bpf) Run() {
-	go b.xdp.Run()
+	go b.Xdp.Run()
 
 	for {
-		packet, err := b.xdp.GetPacket()
+		packet, err := b.Xdp.GetPacket()
 		if err != nil {
 			log.Fatalf("get packet: %s", err)
 			break
