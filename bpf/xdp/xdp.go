@@ -34,12 +34,13 @@ type Xdp struct {
 	Packets chan XdpPacket
 }
 
-func NewXdp(stopper chan os.Signal, iface *net.Interface) *Xdp {
+func NewXdp(stopper chan os.Signal, iface *net.Interface, packetChannel chan XdpPacket) *Xdp {
 
 	return &Xdp{
 		stopper: stopper,
 		iface: iface,
-		Packets: make(chan XdpPacket, 1024),
+		// Packets: make(chan XdpPacket, 1024),
+		Packets: packetChannel,
 	}
 }
 

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/kubespect/agent/bpf"
+	"github.com/kubespect/agent/bpf/xdp"
 	"github.com/kubespect/agent/internal/grpc"
 )
 
@@ -15,9 +16,16 @@ func NewCmd(ifaceName string) *Cmd {
 
 func (c *Cmd) Run() {
 	
-	bpf := bpf.NewBpf(c.ifaceName)
+	xdpChannel := make(chan xdp.XdpPacket, 1024)
+	bpf := bpf.NewBpf(c.ifaceName, xdpChannel)
 	bpf.Run()
 
 	grpc := grpc.NewGrpcClient()
-	grpc.SendXdpPackets(bpf.Xdp.Packets)
+
+	for {
+		err := grpc.SendXdpPackets(xdpChannel)
+		if err != nil {
+			break
+		}
+	}
 }

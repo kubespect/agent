@@ -16,7 +16,7 @@ type Bpf struct {
 	stopper chan os.Signal
 }
 
-func NewBpf(ifaceName string) *Bpf {
+func NewBpf(ifaceName string, xdpChannel chan xdp.XdpPacket) *Bpf {
 
 	stopper := make(chan os.Signal, 1)
 	signal.Notify(stopper, os.Interrupt, syscall.SIGTERM)
@@ -28,23 +28,23 @@ func NewBpf(ifaceName string) *Bpf {
 
 	return &Bpf{
 		stopper: stopper,
-		Xdp:     xdp.NewXdp(stopper, iface),
+		Xdp:     xdp.NewXdp(stopper, iface, xdpChannel),
 	}
 }
 
 func (b *Bpf) Run() {
 	go b.Xdp.Run()
 
-	for {
-		packet, err := b.Xdp.GetPacket()
-		if err != nil {
-			log.Fatalf("get packet: %s", err)
-			break
-		}
-		if packet == (xdp.XdpPacket{}) {
-			log.Fatalf("get packet: packet is empty")
-			break
-		}
-		log.Printf("%+v", packet)
-	}
+	// for {
+	// 	packet, err := b.Xdp.GetPacket()
+	// 	if err != nil {
+	// 		log.Fatalf("get packet: %s", err)
+	// 		break
+	// 	}
+	// 	if packet == (xdp.XdpPacket{}) {
+	// 		log.Fatalf("get packet: packet is empty")
+	// 		break
+	// 	}
+	// 	log.Printf("%+v", packet)
+	// }
 }
