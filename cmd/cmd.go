@@ -20,10 +20,10 @@ func (c *Cmd) Run() {
 	bpf := bpf.NewBpf(c.ifaceName, xdpChannel)
 	bpf.Run()
 
-	grpc := grpc.NewGrpcClient()
+	grpc := grpc.NewGrpcClient(xdpChannel)
 
 	for {
-		err := grpc.SendXdpPackets(xdpChannel)
+		err := grpc.SendXdpPackets()
 		if err != nil {
 			break
 		}
