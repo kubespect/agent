@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/kubespect/agent/bpf/xdp"
-	pb "github.com/kubespect/agent/protobuf/xdp"
+	pb "github.com/kubespect/protobuf/xdp"
 	"google.golang.org/grpc"
 )
 
